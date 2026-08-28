@@ -2,7 +2,7 @@ import React from "react";
 import frogMascot from "../assets/frog_mascot.png";
 import frogApproved from "../assets/frog_approved.png";
 import frogWorried from "../assets/frog_worried.png";
-import frogDenied from "../assets/frog_denied.jpg";
+import frogDenied from "../assets/frog_denied.png";
 
 export default function FrogMascot({ mood = "thinking", size = 90, className = "", style = {} }) {
   let img = frogMascot;
