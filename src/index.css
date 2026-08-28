@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Card Backgrounds & General Figma details */
+.figma-card {
+  background: #FFFFFF !important;
+  border-radius: 30px !important;
+  padding: 32px 28px !important;
+  box-shadow: 0 10px 30px rgba(60, 60, 30, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
+}
+
+/* Calculator Clipping Container to follow Figma cropped keyboard layout */
+.calculator-clip {
+  height: 310px; /* Crops the keypad rows below row 1-2 exactly like Figma design */
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  margin-top: auto; /* Pushes calculator to bottom of the card */
+  border-radius: 28px; /* Smooth corners for the clip boundary */
+}
+
+/* Custom class for the verdict card to remove bottom padding and clip bottom of calculator */
+.verdict-card {
+  padding-bottom: 0px !important;
+  overflow: hidden !important;
+}
+
+/* Dotted dividers */
+.dotted-divider-fine {
+  border-top: 1px dotted #8B8577;
+  opacity: 0.55;
+  margin: 12px 0;
+  width: 100%;
+}
+
+/* Next Button & inputs layout */
+.receipt-input {
+  background: #FFFFFF;
+  border: 2px solid #ECD7B1; /* Use the same stroke color as focused state */
+  border-radius: 12px;
+  padding: 13px 16px;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.next-btn {
+  background: #EFC58B;
+  color: #8B8577; /* Grey-ish text color inside Next button from screenshot */
+  border: none;
+  border-bottom: 2px solid #D48F08; /* Bottom stroke of 2px D48F08 */
+  border-radius: 12px;
+  padding: 13px 14px 11px 14px; /* Compensate for the bottom stroke border height */
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  width: 100%; /* Full width matching input box exactly */
+  box-sizing: border-box;
+  display: block;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+}
+
+.next-btn:hover {
+  background: #E2A85E;
+}
+
+.next-btn.active {
+  background: #EFC58B !important;
+  color: #2B2A22 !important;
+  border-bottom: 2px solid #D48F08 !important;
+  opacity: 1 !important;
+}
+
+.next-btn:active {
+  transform: scale(0.97);
+}
+
+.choice-btn {
+  width: 100%;
+  background: #FFFFFF;
+  border: 2px solid #2B2A22; /* Styled choices similar to inputs */
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #2B2A22;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s;
+}
+
+.choice-btn:hover {
+  background: #FFFBF5;
+}
+
+/* Orbit fonts for numbers */
+.orbit-num {
+  font-family: 'Orbitron', sans-serif !important;
+}
+
+/* Animations */
+@keyframes stampDown {
+  0% {
+    transform: scale(3) rotate(-15deg);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  50% {
+    transform: scale(0.9) rotate(-4deg);
+    opacity: 1;
+    filter: blur(0);
+  }
+  70% {
+    transform: scale(1.05) rotate(-2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes rowIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes frogBob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.row-in {
+  animation: rowIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.stamp {
+  animation: stampDown 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+  transform-origin: center;
+}
+
+.frog-idle {
+  animation: frogBob 2.8s ease-in-out infinite;
+}
+
+/* Responsive columns layout */
+@media (max-width: 768px) {
+  .bn-columns {
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+  
+  .calculator-clip {
+    max-width: 320px !important;
+    height: 260px !important;
+  }
+}
