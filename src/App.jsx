@@ -214,8 +214,8 @@ function computeVerdict(answers) {
 }
 
 function getLiveResult(step, answers, current) {
-  const price = parseFloat(answers.price) || 0;
-  const income = parseFloat(answers.income) || 0;
+  const price = parseFloat(answers.price) || (step === 0 ? parseFloat(current) || 0 : 0);
+  const income = parseFloat(answers.income) || (step === 1 ? parseFloat(current) || 0 : 0);
   
   let expenses = parseFloat(answers.expenses) || 0;
   if (step === 2) {
@@ -228,6 +228,8 @@ function getLiveResult(step, answers, current) {
   
   const need = answers.need || (step === 3 ? current : null);
   const usage = answers.usage || (step === 4 ? current : null);
+  const savings = answers.savings || (step === 5 ? current : null);
+  const debt = answers.debt || (step === 6 ? current : null);
 
   return {
     price,
@@ -238,6 +240,8 @@ function getLiveResult(step, answers, current) {
     pct,
     need,
     usage,
+    savings,
+    debt,
   };
 }
 
@@ -265,8 +269,8 @@ function getScorecard(result, step) {
     });
   }
 
-  // 2. Want or need (shown if step >= 4)
-  if (step >= 4) {
+  // 2. Want or need (shown if step >= 4 or if result.need)
+  if (step >= 4 || (step >= 3 && result.need)) {
     let needRead = "neutral";
     let needStatus = "neutral";
     if (result.need === "need") {
@@ -276,14 +280,14 @@ function getScorecard(result, step) {
     factors.push({
       icon: "🎯",
       label: "Want or need",
-      value: result.need === "need" ? "Need" : "Want",
+      value: result.need === "need" ? "It's a need" : "It's a want",
       read: needRead,
       status: needStatus
     });
   }
 
-  // 3. How often you'll use it (shown if step >= 5)
-  if (step >= 5) {
+  // 3. How often you'll use it (shown if step >= 5 or if result.usage)
+  if (step >= 5 || (step >= 4 && result.usage)) {
     let usageRead = "neutral";
     let usageStatus = "neutral";
     if (result.usage === "constant") {
@@ -299,6 +303,52 @@ function getScorecard(result, step) {
       value: result.usage === "constant" ? "Constantly" : result.usage === "once" ? "Once, maybe" : "Sometimes",
       read: usageRead,
       status: usageStatus
+    });
+  }
+
+  // 4. Savings buffer (shown if step >= 6 or if result.savings)
+  if (step >= 6 || (step >= 5 && result.savings)) {
+    let savingsRead = "neutral";
+    let savingsStatus = "neutral";
+    let savingsLabel = "A little";
+    if (result.savings === "cushion") {
+      savingsRead = "in your favor";
+      savingsStatus = "favor";
+      savingsLabel = "Decent cushion";
+    } else if (result.savings === "nothing") {
+      savingsRead = "against you";
+      savingsStatus = "against";
+      savingsLabel = "Nothing right now";
+    }
+    factors.push({
+      icon: "🛡️",
+      label: "Savings buffer",
+      value: savingsLabel,
+      read: savingsRead,
+      status: savingsStatus
+    });
+  }
+
+  // 5. Existing debt (shown if step >= 7 or if result.debt)
+  if (step >= 7 || (step >= 6 && result.debt)) {
+    let debtRead = "neutral";
+    let debtStatus = "neutral";
+    let debtLabel = "Manageable";
+    if (result.debt === "nodebt") {
+      debtRead = "in your favor";
+      debtStatus = "favor";
+      debtLabel = "No debt";
+    } else if (result.debt === "tight") {
+      debtRead = "against you";
+      debtStatus = "against";
+      debtLabel = "Tight debt";
+    }
+    factors.push({
+      icon: "💳",
+      label: "Existing debt",
+      value: debtLabel,
+      read: debtRead,
+      status: debtStatus
     });
   }
 
@@ -639,7 +689,7 @@ export default function App() {
                   Milo’s verdict
                 </h2>
                 <p style={{ fontStyle: "italic", fontSize: "14px", color: INK_MUTED, margin: "4px 0 0 0" }}>
-                  noted.
+                  {done ? "audit complete." : "noted."}
                 </p>
               </div>
               <FrogMascot
